@@ -15,8 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,24 +25,30 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import org.uni.mobilecomputinghomework1.ui.theme.MobileComputingHomework1Theme
 
 @Composable
-fun FoodItem(description: String, name: String, image: Int) {
-    val backgroundColor = remember { mutableStateOf(Color.LightGray) }
+fun FoodItem(
+    description: String,
+    foodId: Int,
+    navController: NavController
+) {
+    val image = getFoodImageById(foodId)
+    val name = getFoodNameById(foodId)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(8.dp)
             .clip(RoundedCornerShape(24.dp))
             .fillMaxWidth()
-            .background(backgroundColor.value)
+            .background(Color.LightGray)
             .border(
                 width = 1.dp, color = Color.DarkGray, shape = RoundedCornerShape(24.dp)
             )
             .clickable {
-                backgroundColor.value =
-                    if (backgroundColor.value == Color.LightGray) Color.DarkGray else Color.LightGray
+                navController.navigate(Screens.Food.createRoute(id = foodId))
             }
     ) {
         Image(
@@ -90,8 +94,8 @@ fun FoodItemPreview() {
     MobileComputingHomework1Theme {
         FoodItem(
             description = "A beloved Italian dish made with a baked dough base, topped with tomato sauce, cheese, and a variety of toppings like vegetables or meat.",
-            image = R.drawable.pizza_food,
-            name = "Pizza"
+            foodId = 5,
+            navController = rememberNavController()
         )
     }
 }

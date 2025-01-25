@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Mobile Computing Homework1</string>
+    <string name="label_next">Next</string>
+    <string name="label_home">Home</string>
+    <string name="label_previous">Previous</string>
 </resources>
