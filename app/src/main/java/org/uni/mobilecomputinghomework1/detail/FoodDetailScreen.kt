@@ -1,6 +1,5 @@
-package org.uni.mobilecomputinghomework1
+package org.uni.mobilecomputinghomework1.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +16,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,14 +30,22 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import org.uni.mobilecomputinghomework1.R
+import org.uni.mobilecomputinghomework1.Screens
 import org.uni.mobilecomputinghomework1.ui.theme.MobileComputingHomework1Theme
 
 @Composable
-fun FoodDetailScreen(foodId: Int, navController: NavController) {
-    val foodName = getFoodNameById(foodId)
-    val foodImage = getFoodImageById(foodId)
+fun FoodDetailScreen(
+    foodId: Int,
+    navController: NavController,
+    viewModel: DetailViewModel = hiltViewModel()
+) {
+    val food = viewModel.getFoodById(foodId).collectAsState(null)
+    val maxId by viewModel.maxId.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,18 +55,18 @@ fun FoodDetailScreen(foodId: Int, navController: NavController) {
     )
     {
         Text(
-            text = foodName,
+            text = food.value?.name ?: "food",
             fontWeight = FontWeight.Bold,
             style = TextStyle(fontSize = 40.sp, textDecoration = TextDecoration.Underline)
         )
         Spacer(modifier = Modifier.height(32.dp))
-        Image(
+        AsyncImage(
+            model = food.value?.imagePath,
             modifier = Modifier
                 .size(212.dp)
                 .clip(RoundedCornerShape(48.dp))
                 .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(48.dp)),
-            painter = painterResource(foodImage),
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             contentDescription = "food image"
         )
         Spacer(modifier = Modifier.height(92.dp))
@@ -76,8 +84,7 @@ fun FoodDetailScreen(foodId: Int, navController: NavController) {
                     disabledContentColor = Color.LightGray,
                     disabledContainerColor = Color.DarkGray
                 ), onClick = {
-                    val previousFoodId =
-                        (foodId - 1 + FakeFoodData.foodList.size) % FakeFoodData.foodList.size
+                    val previousFoodId = if (foodId > 1) foodId - 1 else maxId!!
                     navController.navigate(Screens.Food.createRoute(id = previousFoodId)) {
                         popUpTo(Screens.Food.route.replace("{foodId}", "$foodId")) {
                             inclusive = true
@@ -95,7 +102,7 @@ fun FoodDetailScreen(foodId: Int, navController: NavController) {
                     disabledContentColor = Color.LightGray,
                     disabledContainerColor = Color.DarkGray
                 ), onClick = {
-                    val nextFoodId = (foodId + 1) % (FakeFoodData.foodList.size)
+                    val nextFoodId = if (foodId < maxId!!) foodId + 1 else 1
                     navController.navigate(Screens.Food.createRoute(id = nextFoodId)) {
                         popUpTo(Screens.Food.route.replace("{foodId}", "$foodId")) {
                             inclusive = true

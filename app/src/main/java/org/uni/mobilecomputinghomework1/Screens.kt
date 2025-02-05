@@ -7,4 +7,6 @@ sealed class Screens(val route: String) {
             return "FoodScreen/$id"
         }
     }
+
+    data object AddFood : Screens("AddFood")
 }

@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.uni.mobilecomputinghomework1.addfood.AddFoodScreen
+import org.uni.mobilecomputinghomework1.detail.FoodDetailScreen
+import org.uni.mobilecomputinghomework1.home.HomeScreen
 
 @Composable
 fun Navigation() {
@@ -18,6 +21,9 @@ fun Navigation() {
                 foodId = foodId,
                 navController = navController
             )
+        }
+        composable(route = Screens.AddFood.route) {
+            AddFoodScreen(navController = navController)
         }
     }
 }
