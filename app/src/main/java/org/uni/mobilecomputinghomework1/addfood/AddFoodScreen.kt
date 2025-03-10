@@ -1,5 +1,6 @@
 package org.uni.mobilecomputinghomework1.addfood
 
+import android.Manifest
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,8 +21,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,15 +38,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.uni.mobilecomputinghomework1.R
 import org.uni.mobilecomputinghomework1.datasource.Food
+import org.uni.mobilecomputinghomework1.saveBitmapToFile
 import org.uni.mobilecomputinghomework1.saveImageToInternalStorage
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFoodScreen(
     navController: NavController,
@@ -56,6 +63,8 @@ fun AddFoodScreen(
     var foodDescription by remember { mutableStateOf("") }
     var foodName by remember { mutableStateOf("") }
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -67,6 +76,27 @@ fun AddFoodScreen(
         }
     }
 
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview(),
+        onResult = { bitmap ->
+            bitmap?.let {
+                val uri = saveBitmapToFile(context, it)
+                loadedUrl = uri.toString()
+                imagePath = saveImageToInternalStorage(context, uri!!)
+            }
+        }
+    )
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                cameraLauncher.launch(null) // Launch Camera if permission is granted
+            } else {
+                Toast.makeText(context, "Camera permission is required", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,7 +108,7 @@ fun AddFoodScreen(
             modifier = Modifier
                 .size(160.dp)
                 .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
-                .clickable { imagePickerLauncher.launch("image/*") },
+                .clickable { showBottomSheet = true },
             contentAlignment = Alignment.Center
         ) {
             if (loadedUrl != null) {
@@ -187,6 +217,48 @@ fun AddFoodScreen(
                 }
             ) {
                 Text(stringResource(R.string.label_add))
+            }
+        }
+    }
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    stringResource(R.string.label_select_an_option),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Button(
+                    onClick = {
+                        showBottomSheet = false
+                        imagePickerLauncher.launch("image/*")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(stringResource(R.string.label_pick_from_gallery))
+                }
+
+                Button(
+                    onClick = {
+                        showBottomSheet = false
+                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(stringResource(R.string.label_take_a_photo))
+                }
             }
         }
     }

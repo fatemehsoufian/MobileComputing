@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.splashscreen)
+    implementation(libs.camera.core)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
 
     ksp(libs.room.compiler)
     ksp(libs.hilt.compiler)
