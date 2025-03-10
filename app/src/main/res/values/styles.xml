@@ -5,7 +5,7 @@
         <!-- Set the splash screen background color -->
         <item name="android:windowSplashScreenBackground">@color/white</item>
         <!-- Set the splash screen icon -->
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/chef</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/animated_logo</item>
         <!-- Set the theme for the activity after the splash screen -->
         <item name="android:splashScreenTheme">@style/Theme.MobileComputingHomework1</item>
     </style>
