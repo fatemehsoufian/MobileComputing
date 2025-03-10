@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.App.Splash" parent="Theme.MobileComputingHomework1">
+        <!-- Set the splash screen background color -->
+        <item name="android:windowSplashScreenBackground">@color/white</item>
+        <!-- Set the splash screen icon -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/chef</item>
+        <!-- Set the theme for the activity after the splash screen -->
+        <item name="android:splashScreenTheme">@style/Theme.MobileComputingHomework1</item>
+    </style>
+
+</resources>

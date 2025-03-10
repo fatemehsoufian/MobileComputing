@@ -1,11 +1,11 @@
 package org.uni.mobilecomputinghomework1
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.uni.mobilecomputinghomework1.ui.theme.MobileComputingHomework1Theme
@@ -14,6 +14,9 @@ import org.uni.mobilecomputinghomework1.ui.theme.MobileComputingHomework1Theme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -28,8 +31,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        Intent(this, ShakeDetectionService::class.java).also { intent ->
-            startService(intent)
-        }
+//        Intent(this, ShakeDetectionService::class.java).also { intent ->
+//            startService(intent)
+//        }
     }
 }

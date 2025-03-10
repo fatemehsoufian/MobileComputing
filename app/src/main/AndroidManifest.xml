@@ -23,7 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MobileComputingHomework1">
+            android:theme="@style/Theme.App.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,10 +40,10 @@
                     android:scheme="myapp" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".ShakeDetectionService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
+        <!--        <service-->
+        <!--            android:name=".ShakeDetectionService"-->
+        <!--            android:exported="false"-->
+        <!--            android:foregroundServiceType="specialUse" />-->
     </application>
 
 </manifest>
